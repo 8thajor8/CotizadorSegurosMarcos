@@ -2,7 +2,7 @@ body{
     height: 100vh;
     background-color: black;
     color: white;
-    background-image: url(/assets/shade.png);
+    background-image: url(assets/shade.png);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: bottom;
