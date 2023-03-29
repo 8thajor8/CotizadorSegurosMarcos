@@ -1,4 +1,18 @@
+/*Se declara la funcion constructora del objeto pasajero*/
+function Pasajero (id, nombre, documento, edad, precioxdia, precioxpasajero){
+    this.id = id;
+    this.nombre = nombre;
+    this.documento = documento;
+    this.edad = edad;
+    this.precioxdia = precioxdia;
+    this.precioxpasajero = precioxpasajero;
+}
+
+
 const quote = ()=>{
+    /*Se vacia la seccion donde va a ir el resultado de la tabla en caso que se cotize mas de una vez*/
+    let tablaSeccion= document.getElementById('tablaresultado');
+    tablaSeccion.innerHTML = ``;
     alert("Bienvenido a su cotizador favorito de seguros de viaje! Vamos a empezar:");
 
     /*Consulta la zona. Verifica que ingrese una opcion valida*/
@@ -20,37 +34,40 @@ const quote = ()=>{
                 
             }else{
 
-                /*Inicializa las variables para consultar las edades de los pasajeros y calcular el precio por dia y sumarlo al precio final*/
-                let contador= 1;
-                let precioFinal= 0;
-                let precioPorDia= 0;
+                /*Inicializa las variables para consultar las edades de los pasajeros y calcular el precio por dia y sumarlo al precio final. Se agrega la generacion de la constante que contiene el array final de pasajeros*/
+                let contador = 1;
+                let precioFinal = 0;
+                let precioPorDia = 0;
                 let precioPasajero;
-                let mensajeResumen="El resumen final de su compra es:\n";
+                let mensajeResumen = "El resumen final de su compra es:\n";
+                const arrayPasajeros = [];
                 for(i=cantPasaj; i>0; i--){
                     
-                    /*se utiliza el objeto window para crear i cantidad de variables con el nombre i como sufijo a cada una y verifica que se ingresen valores validos */
-                    let pasaj= "pasaj"+ i;
-                    window[pasaj]= parseInt(prompt("Que edad tiene el pasajero "+ contador + "?"));
-                    if(isNaN(window[pasaj]) || window[pasaj]>120 || window[pasaj]<0 ){
+                    /*se captura la edad de cada pasajero y verifica que se ingresen valores validos para poder continuar*/
+                    
+                    let edad = parseInt(prompt("Que edad tiene el pasajero "+ contador + "?"));
+                    if(isNaN(edad) || edad>120 || edad<0 ){
                         alert("Por favor ingresa unicamente un valor numerico valido, caso contrario volves a empezar...un garron.");
                         break;
                     }else{
-                        console.log(pasaj + ": " + window[pasaj]);
                         
+                        /* Se agregan variables de nombre y documento del pasajero*/
+                        let nombrePasajero = (prompt("Que nombre tiene el pasajero "+ contador + "?"));
+                        let documentoPasajero = (prompt("Que documento tiene el pasajero "+ contador + "?"));
                         
                         /*calcula segun la zona y el grupo de edad el valor por dia, lo multiplica por la cantidad de dias y lo guarda en una variable*/
                         
                         switch (zoneGroup){
                             case 1:
-                                if (window[pasaj] < 18){
+                                if (edad < 18){
                                     precioPorDia = 2;
                                     precioPasajero = precioPorDia * cantDias;
                                     
-                                } else if (window[pasaj]>=18 && window[pasaj] < 30){
+                                } else if (edad>=18 && edad < 30){
                                     precioPorDia = 2.5;
                                     precioPasajero = precioPorDia * cantDias;
 
-                                } else if (window[pasaj]>=30 && window[pasaj] < 50){
+                                } else if (edad>=30 && edad < 50){
                                     precioPorDia = 2.7;
                                     precioPasajero = precioPorDia * cantDias;
 
@@ -62,15 +79,15 @@ const quote = ()=>{
                                 break;
                             
                             case 2:
-                                if (window[pasaj] < 18){
+                                if (edad < 18){
                                     precioPorDia = 2.5;
                                     precioPasajero = precioPorDia * cantDias;
 
-                                } else if (window[pasaj]>=18 && window[pasaj] < 30){
+                                } else if (edad>=18 && edad < 30){
                                     precioPorDia = 2.7;
                                     precioPasajero = precioPorDia * cantDias;
 
-                                } else if (window[pasaj]>=30 && window[pasaj] < 50){
+                                } else if (edad>=30 && edad < 50){
                                     precioPorDia = 3;
                                     precioPasajero = precioPorDia * cantDias;
 
@@ -82,15 +99,15 @@ const quote = ()=>{
                                 break;
 
                             case 3:
-                                if (window[pasaj] < 18){
+                                if (edad < 18){
                                     precioPorDia = 2.7;
                                     precioPasajero = precioPorDia * cantDias;
 
-                                } else if (window[pasaj]>=18 && window[pasaj] < 30){
+                                } else if (edad>=18 && edad < 30){
                                     precioPorDia = 3;
                                     precioPasajero = precioPorDia * cantDias;
 
-                                } else if (window[pasaj]>=30 && window[pasaj] < 50){
+                                } else if (edad>=30 && edad < 50){
                                     precioPorDia = 3.5;
                                     precioPasajero = precioPorDia * cantDias;
 
@@ -102,15 +119,15 @@ const quote = ()=>{
                                 break;
 
                             case 4:
-                                if (window[pasaj] < 18){
+                                if (edad < 18){
                                     precioPorDia = 3;
                                     precioPasajero = precioPorDia * cantDias;
 
-                                } else if (window[pasaj]>=18 && window[pasaj] < 30){
+                                } else if (edad>=18 && edad < 30){
                                     precioPorDia = 3.5;
                                     precioPasajero = precioPorDia * cantDias;
 
-                                } else if (window[pasaj]>=30 && window[pasaj] < 50){
+                                } else if (edad>=30 && edad < 50){
                                     precioPorDia = 3.7;
                                     precioPasajero = precioPorDia * cantDias;
 
@@ -122,14 +139,59 @@ const quote = ()=>{
                                 break;
                         }
 
-                        /*Se suma el precio del pasajero al precio final, se van agregando los datos en el mensaje de resumen para reportar todo al final*/
+                        /*Se suma el precio del pasajero al precio final, se genera un nuevo objeto con los datos del pasajero y se agrega al array total de pasajeros*/
                         precioFinal += precioPasajero;
-                        mensajeResumen += "Pasajero " + contador + ": "+ cantDias + " dias * USD$" + precioPorDia + "= USD$" + precioPasajero + " Total\n"
+                        const pasajerocompletado = new Pasajero (contador, nombrePasajero, documentoPasajero, edad, precioPorDia, precioPasajero)
+                        arrayPasajeros.push(pasajerocompletado);
+                        
                         contador++;
+
+                        
                     }
                 }
-                /*Se envia un mensaje con todos los datos finales*/
-                alert("El precio final de tu cotizacion es de USD$" + precioFinal + "\n\n" + mensajeResumen);
+                /*Se arma una tabla con todos los datos finales*/
+                
+
+                let tablaResultado= document.createElement('table');
+                tablaResultado.className = "table table-dark table-striped"
+
+                let tablaHead= document.createElement('thead');
+                tablaHead.innerHTML = `
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Documento</th>
+                        <th scope="col">Edad</th>
+                        <th scope="col">Precio Por Dia</th>
+                        <th scope="col">Precio Total</th>
+                    </tr>
+                `;
+
+                let tablaBody= document.createElement('tbody');
+                for( const pasajero of arrayPasajeros ){
+                    tablaBody.innerHTML += `
+                        <tr>
+                            <td>${pasajero.id}</td>
+                            <td>${pasajero.nombre}</td>
+                            <td>${pasajero.documento}</td>
+                            <td>${pasajero.edad}</td>
+                            <td>USD$${pasajero.precioxdia}</td>
+                            <td>USD$${pasajero.precioxpasajero}</td>
+                        </tr>
+                    `;
+                }
+
+                let tablaFinal = document.createElement('tr')
+                    tablaFinal.className = "text-center stronger"
+                    tablaFinal.innerHTML = `
+                        <td colspan="6">Precio Final = USD$${precioFinal}</td>
+                    `;
+
+                tablaResultado.append(tablaHead);
+                tablaResultado.append(tablaBody);
+                tablaResultado.append(tablaFinal);
+                tablaSeccion.append(tablaResultado);
+                
             }
         }
     }
