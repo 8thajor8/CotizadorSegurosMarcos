@@ -15,11 +15,62 @@
         <h1>Cotizador de Seguros</h1>
     </div>
     
-    <div class="container-fluid text-center p-4">
-        <input type="button" class="btn btn-success" id="quoteButton" onclick="quote();" value="Cotiza Ahora!"/>
+    <div class="container-fluid text-center p-4 " id="initialQuoter">
+        <div class="text-center">
+            <div class="field__container d-inline-flex flex-column  justify-content-center">
+            
+                <div class="field__boxes ">
+                    <select class="form-select form__field" id="zoneselect" aria-label="Zone Select">
+                        <option selected>¿A donde vas a viajar?</option>
+                        <option value="1" >Americas</option>
+                        <option value="2" >Europa</option>
+                        <option value="3" >Asia</option>
+                        <option value="4" >Oceania</option>
+                    </select>
+                </div>
+
+                <div class="field__boxes">
+                    <label class="me-2">Inicio de viaje:</label>
+                    <input type="date" id="startdate" name="startdate" class="form__field">
+                </div>
+
+                <div class="field__boxes">
+                    <label class="me-2">Fin de viaje:</label>
+                    <input type="date" id="enddate" name="enddate" class="form__field">
+                </div>
+
+                <div class="field__boxes">
+                    <select class="form-select form__field" id="cantpasaj" aria-label="Select Pasajeros" >
+                        <option selected>¿Cuantos pasajeros hay en tu grupo?</option>
+                        <option value="1" >1</option>
+                        <option value="2" >2</option>
+                        <option value="3" >3</option>
+                        <option value="4" >4</option>
+                        <option value="5" >5</option>
+                        <option value="6" >6</option>
+                        <option value="7" >7</option>
+                        <option value="8" >8</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <section id="campos__pasajeros" class="text-center d-flex flex-wrap justify-content-center">
+
+        </section>
+        
+    
+
+        <div class="my-4">
+            <input type="button" class="btn btn-success" id="quoteButton" onclick="quote();" value="Cotiza Ahora!"/>
+            <input type="button" class="btn btn-warning" id="borrarStorage" onclick="borrar();" value="Borrar Datos"/>
+        </div>
+
     </div>
 
-    <section id="tablaresultado" class="px-5">
+    
+
+    <section id="tablaresultado" class="px-5 mb-5 pb-5">
         <!-- Aca va el resultado -->
     </section>
     

@@ -9,51 +9,141 @@ function Pasajero (id, nombre, documento, edad, precioxdia, precioxpasajero){
 }
 
 
+/*Se captura la informacion de la cantidad de pasajeros para definir la cantidad de grupos de campos que se crean en la funcion */
+const selectPasajeros = document.getElementById("cantpasaj");
+const camposPasajeros = document.getElementById("campos__pasajeros");
+
+const agregarCamposPasajeros = () => {
+        const groupSize = parseInt(selectPasajeros.value);
+
+        camposPasajeros.innerHTML = ``;
+
+        
+        for (let i = 1; i <= groupSize; i++) {
+            
+            const passengerInput = document.createElement("div");
+                passengerInput.className = "mx-3"
+                passengerInput.innerHTML = `
+
+                <div>
+                    <input type="text" id="nombre${i}" name="nombre${i}" placeholder="Nombre Pasajero #${i}" class="form__field wider">
+                </div>
+
+                <div>
+                    <input type="text" id="edad${i}" name="edad${i}" placeholder="Edad Pasajero #${i}" class="form__field wider">
+                </div>
+
+                <div>
+                    <input type="text" id="documento${i}" name="documento${i}" placeholder="Documento Pasajero #${i}" class="form__field wider">
+                </div>
+                `;
+                
+                
+
+            camposPasajeros.appendChild(passengerInput);
+            
+        }
+    }
+
+    /*Se genera un event listener para detectar cambios en el select y generar los campos correspondientes al cambio*/
+    selectPasajeros.addEventListener("change", agregarCamposPasajeros);
+
+
+    /*Se completan los campos en caso de haber guardado datos de cotizaciones anteriores en local storage al cargar el sitio*/
+    const zoneSelect = document.getElementById('zoneselect');
+    const startDateInput = document.getElementById('startdate');
+    const endDateInput = document.getElementById('enddate');
+    const cantPasajSelect = document.getElementById('cantpasaj');
+
+    window.addEventListener('load', function() {
+        const zoneSelectValue = localStorage.getItem('zoneSelectValue');
+        if (zoneSelectValue) {
+            zoneSelect.value = zoneSelectValue;
+        }
+    
+        const startDateValue = localStorage.getItem('startDateValue');
+        if (startDateValue) {
+            startDateInput.value = new Date(startDateValue).toISOString().slice(0, 10);
+        }
+    
+        const endDateValue = localStorage.getItem('endDateValue');
+        if (endDateValue) {
+            endDateInput.value = new Date(endDateValue).toISOString().slice(0, 10);
+        }
+    
+        const cantPasajSelectValue = localStorage.getItem('cantPasajSelectValue');
+        if (cantPasajSelectValue) {
+            cantPasajSelect.value = cantPasajSelectValue;
+            agregarCamposPasajeros();
+        }
+    });
+
 const quote = ()=>{
+    
+    
     /*Se vacia la seccion donde va a ir el resultado de la tabla en caso que se cotize mas de una vez*/
     let tablaSeccion= document.getElementById('tablaresultado');
     tablaSeccion.innerHTML = ``;
-    alert("Bienvenido a su cotizador favorito de seguros de viaje! Vamos a empezar:");
+    
 
-    /*Consulta la zona. Verifica que ingrese una opcion valida*/
-    let zoneGroup = parseInt(prompt("A donde vas a viajar (escribe el numero correspondiente a la opcion)?:\n1. Americas\n2. Europa\n3. Asia\n4. Oceania"));
+    /*Consulta la zona. Verifica que ingrese una opcion valida. Guarda el valor en local storage*/
+    const zoneGroupSelection = document.getElementById('zoneselect');
+    localStorage.setItem('zoneSelectValue', zoneGroupSelection.value)
+
+    /*Se guarda el nombre de la region para mostrarlo en tabla mas tarde*/
+    const selectedIndex = zoneGroupSelection.selectedIndex;
+    const selectedOption = zoneGroupSelection.options[selectedIndex];
+    const zoneGroupName = selectedOption.text;
+    const zoneGroup = parseInt(zoneGroupSelection.value);
     if(zoneGroup>4 || zoneGroup<1 || isNaN(zoneGroup)){
-        alert("El valor ingresado no corresponde a ninguna de las opciones. Volve a empezar!");
+        alert("Selecciona una opcion del menu de regiones para poder continuar");
     }else{
 
-        /*Si ingresa una zona valida, consulta la cantidad de dias que viaja y se asegura que se ingrese un valor valido */
-        let cantDias = parseInt(prompt("Cuantos dias vas a viajar?"));
+        /*Si ingresa una zona valida, consulta las fechas de viaje y realiza la cuenta para determinar cantidad de dias. se guardan valores en local storage*/
+        
+        const startdate = new Date(document.getElementById('startdate').value);
+        localStorage.setItem('startDateValue', startdate.toISOString());
+
+        const enddate = new Date(document.getElementById('enddate').value);
+        localStorage.setItem('endDateValue', enddate.toISOString());
+
+        const difference = enddate.getTime() - startdate.getTime();
+        const cantDias = Math.ceil(difference / (1000 * 3600 * 24));;
+        console.log(cantDias);
         if(isNaN(cantDias)){
-            alert("Por favor ingresa unicamente un valor numerico, caso contrario volves a empezar...un garron.");
+            alert("Por favor ingresa las fechas desde y hasta correctamente");
         }else{
 
-            /*Si ingresa una cantidad de dias validos, consulta la cantidad de pasajeros y se asegura que se ingrese un valor valido */
-            let cantPasaj = parseInt(prompt("¿Cuantos pasajeros hay dentro de tu grupo?"));
+            /*Se sigue con la captura de la cantidad de pasajeros para determinar la cantidad de iteraciones de calculo y se guarda el valor en local storage */
+            const cantPasaj = parseInt(document.getElementById('cantpasaj').value);
+            localStorage.setItem('cantPasajSelectValue', cantpasaj.value);
             if(isNaN(cantPasaj)){
-                alert("Por favor ingresa unicamente un valor numerico, caso contrario volves a empezar...un garron.");
+                alert("Por favor ingresa la cantidad de pasajeros correspondiente a tu grupo");
                 
             }else{
 
-                /*Inicializa las variables para consultar las edades de los pasajeros y calcular el precio por dia y sumarlo al precio final. Se agrega la generacion de la constante que contiene el array final de pasajeros*/
+                /*Inicializa las variables para hacer calculos correspondientes y sumarlo al precio final. Se agrega la generacion de la constante que contiene el array final de pasajeros*/
                 let contador = 1;
                 let precioFinal = 0;
                 let precioPorDia = 0;
                 let precioPasajero;
                 let mensajeResumen = "El resumen final de su compra es:\n";
                 const arrayPasajeros = [];
+                const calculoPasajero = xdia => Number((xdia * cantDias).toFixed(2));
                 for(i=cantPasaj; i>0; i--){
                     
-                    /*se captura la edad de cada pasajero y verifica que se ingresen valores validos para poder continuar*/
+                    /*se verifica que los datos ingresados en los campos de edad sean correctos para poder continuar*/
                     
-                    let edad = parseInt(prompt("Que edad tiene el pasajero "+ contador + "?"));
+                    
+                    let edad = parseInt(document.getElementById(`edad${contador}`).value);
                     if(isNaN(edad) || edad>120 || edad<0 ){
-                        alert("Por favor ingresa unicamente un valor numerico valido, caso contrario volves a empezar...un garron.");
+                        alert("Por favor ingrese las edades correctamente");
                         break;
                     }else{
                         
-                        /* Se agregan variables de nombre y documento del pasajero*/
-                        let nombrePasajero = (prompt("Que nombre tiene el pasajero "+ contador + "?"));
-                        let documentoPasajero = (prompt("Que documento tiene el pasajero "+ contador + "?"));
+                        /* Se agregan variables de nombre y documento del pasajero y se capturan los datos de los inputs*/
+                        let nombrePasajero = document.getElementById(`nombre${contador}`).value;
+                        let documentoPasajero = document.getElementById(`documento${contador}`).value;
                         
                         /*calcula segun la zona y el grupo de edad el valor por dia, lo multiplica por la cantidad de dias y lo guarda en una variable*/
                         
@@ -61,19 +151,19 @@ const quote = ()=>{
                             case 1:
                                 if (edad < 18){
                                     precioPorDia = 2;
-                                    precioPasajero = precioPorDia * cantDias;
+                                    precioPasajero = calculoPasajero(precioPorDia);
                                     
                                 } else if (edad>=18 && edad < 30){
                                     precioPorDia = 2.5;
-                                    precioPasajero = precioPorDia * cantDias;
+                                    precioPasajero = calculoPasajero(precioPorDia);
 
                                 } else if (edad>=30 && edad < 50){
                                     precioPorDia = 2.7;
-                                    precioPasajero = precioPorDia * cantDias;
-
+                                    precioPasajero = calculoPasajero(precioPorDia);
+                                    
                                 } else {
                                     precioPorDia = 3;
-                                    precioPasajero = precioPorDia * cantDias;
+                                    precioPasajero = calculoPasajero(precioPorDia);
 
                                 }
                                 break;
@@ -81,19 +171,19 @@ const quote = ()=>{
                             case 2:
                                 if (edad < 18){
                                     precioPorDia = 2.5;
-                                    precioPasajero = precioPorDia * cantDias;
+                                    precioPasajero = calculoPasajero(precioPorDia);
 
                                 } else if (edad>=18 && edad < 30){
                                     precioPorDia = 2.7;
-                                    precioPasajero = precioPorDia * cantDias;
+                                    precioPasajero = calculoPasajero(precioPorDia);
 
                                 } else if (edad>=30 && edad < 50){
                                     precioPorDia = 3;
-                                    precioPasajero = precioPorDia * cantDias;
+                                    precioPasajero = calculoPasajero(precioPorDia);
 
                                 } else {
                                     precioPorDia = 3.5;
-                                    precioPasajero = precioPorDia * cantDias;
+                                    precioPasajero = calculoPasajero(precioPorDia);
 
                                 }
                                 break;
@@ -101,19 +191,19 @@ const quote = ()=>{
                             case 3:
                                 if (edad < 18){
                                     precioPorDia = 2.7;
-                                    precioPasajero = precioPorDia * cantDias;
+                                    precioPasajero = calculoPasajero(precioPorDia);
 
                                 } else if (edad>=18 && edad < 30){
                                     precioPorDia = 3;
-                                    precioPasajero = precioPorDia * cantDias;
+                                    precioPasajero = calculoPasajero(precioPorDia);
 
                                 } else if (edad>=30 && edad < 50){
                                     precioPorDia = 3.5;
-                                    precioPasajero = precioPorDia * cantDias;
+                                    precioPasajero = calculoPasajero(precioPorDia);
 
                                 } else {
                                     precioPorDia = 3.7;
-                                    precioPasajero = precioPorDia * cantDias;
+                                    precioPasajero = calculoPasajero(precioPorDia);
 
                                 }
                                 break;
@@ -121,19 +211,19 @@ const quote = ()=>{
                             case 4:
                                 if (edad < 18){
                                     precioPorDia = 3;
-                                    precioPasajero = precioPorDia * cantDias;
+                                    precioPasajero = calculoPasajero(precioPorDia);
 
                                 } else if (edad>=18 && edad < 30){
                                     precioPorDia = 3.5;
-                                    precioPasajero = precioPorDia * cantDias;
+                                    precioPasajero = calculoPasajero(precioPorDia);
 
                                 } else if (edad>=30 && edad < 50){
                                     precioPorDia = 3.7;
-                                    precioPasajero = precioPorDia * cantDias;
+                                    precioPasajero = calculoPasajero(precioPorDia);
 
                                 } else {
                                     precioPorDia = 4;
-                                    precioPasajero = precioPorDia * cantDias;
+                                    precioPasajero = calculoPasajero(precioPorDia);
 
                                 }
                                 break;
@@ -141,6 +231,7 @@ const quote = ()=>{
 
                         /*Se suma el precio del pasajero al precio final, se genera un nuevo objeto con los datos del pasajero y se agrega al array total de pasajeros*/
                         precioFinal += precioPasajero;
+                        
                         const pasajerocompletado = new Pasajero (contador, nombrePasajero, documentoPasajero, edad, precioPorDia, precioPasajero)
                         arrayPasajeros.push(pasajerocompletado);
                         
@@ -157,6 +248,10 @@ const quote = ()=>{
 
                 let tablaHead= document.createElement('thead');
                 tablaHead.innerHTML = `
+                    <tr>
+                        <td>Zona: ${zoneGroupName}</th>
+                        <td>Cantidad de Dias: ${cantDias}</th>
+                    </tr>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Nombre</th>
@@ -196,3 +291,25 @@ const quote = ()=>{
         }
     }
 }
+
+/*Se genera la funcion para borrar los datos almacenados en el local storage*/
+const borrar = ()=>{
+    localStorage.removeItem('zoneSelectValue');
+    localStorage.removeItem('startDateValue');
+    localStorage.removeItem('endDateValue');
+    localStorage.removeItem('cantPasajSelectValue');
+    
+/*Se eliminan los valores de los inputs*/
+    zoneSelect.selectedIndex = 0;
+    startDateInput.value = '';
+    endDateInput.value = '';
+    cantPasajSelect.selectedIndex = 0;
+
+/*Se elimina la tabla de resultados y los campos de los pasajeros*/
+    tablaSeccion= document.getElementById('tablaresultado');
+    tablaSeccion.innerHTML = ``;
+    camposPasajeros.innerHTML = ``;
+
+    
+}
+
