@@ -5,91 +5,91 @@
             "id": 1,
             "pais": "Argentina",
             "texto": "Recorre el pais y sus maravillas de norte a sur",
-            "imagen": "/assets/argentina.jpg"
+            "imagen": "assets/argentina.jpg"
         },
         {
             "id": 2,
             "pais": "Estados Unidos",
             "texto": "Vive el sorprendete mundo del pais norteamericano",
-            "imagen": "/assets/estadosunidos.jpg"
+            "imagen": "assets/estadosunidos.jpg"
         },
         {
             "id": 3,
             "pais": "Mexico",
             "texto": "Gastronomia, cultura y Caribe",
-            "imagen": "/assets/mexico.jpg"
+            "imagen": "assets/mexico.jpg"
         },
         {
             "id": 4,
             "pais": "Japon",
             "texto": "La belleza tradicional del Oriente",
-            "imagen": "/assets/japon.jpg"
+            "imagen": "assets/japon.jpg"
         },
         {
             "id": 5,
             "pais": "India",
             "texto": "Un viaje a través de una historia compleja, una cultura colorida y un paisaje variado",
-            "imagen": "/assets/india.jpg"
+            "imagen": "assets/india.jpg"
         },
         {
             "id": 6,
             "pais": "España",
             "texto": "Cultura, museos, monumentos, playas, ciudades, fiestas, rutas, gastronomía",
-            "imagen": "/assets/españa.jpg"
+            "imagen": "assets/españa.jpg"
         },
         {
             "id": 7,
             "pais": "Colombia",
             "texto": "Un país tropical de increíble diversidad y encanto",
-            "imagen": "/assets/colombia.jpg"
+            "imagen": "assets/colombia.jpg"
         },
         {
             "id": 8,
             "pais": "Reino Unido",
             "texto": "Bellisimos escenarios naturales, una amplia y completísima escena cultural, una historia apasionante y bien documentada y el encanto de la noche británica",
-            "imagen": "/assets/reinounido.jpg"
+            "imagen": "assets/reinounido.jpg"
         },
         {
             "id": 9,
             "pais": "Peru",
             "texto": "Caracterizado por ser una tierra repleta de paisajes exóticos y naturaleza exuberante",
-            "imagen": "/assets/peru.jpg"
+            "imagen": "assets/peru.jpg"
         },
         {
             "id": 10,
             "pais": "Marruecos",
             "texto": "Descubre la magia de Marruecos: paisajes, cultura y tradiciones únicas",
-            "imagen": "/assets/marruecos.jpg"
+            "imagen": "assets/marruecos.jpg"
         },
         {
             "id": 11,
             "pais": "Francia",
             "texto": "Venga a descubrir los tesoros de las regiones de Francia",
-            "imagen": "/assets/francia.jpg"
+            "imagen": "assets/francia.jpg"
         },
         {
             "id": 12,
             "pais": "Italia",
             "texto": "Explora lugares emblemáticos de Italia y descubre pueblos rústicos, cuevas, un museo del automóvil y una remota isla mediterránea",
-            "imagen": "/assets/italia.jpg"
+            "imagen": "assets/italia.jpg"
         },
         {
             "id": 13,
             "pais": "Noruega",
             "texto": "Pasea por callejuelas flanqueadas por casas blancas de madera en localidades costeras como Risør, Arendal, Grimstad, Mandal o Flekkefjord",
-            "imagen": "/assets/noruega.jpg"
+            "imagen": "assets/noruega.jpg"
         },
         {
             "id": 14,
             "pais": "Tailandia",
             "texto": "Un viaje sensorial por la increíble Tailandia · Inspírate · Naturaleza y ecoturismo · Playas de ensueño",
-            "imagen": "/assets/tailandia.jpg"
+            "imagen": "assets/tailandia.jpg"
         },
         {
             "id": 15,
             "pais": "Alemania",
             "texto": "Si llevas tiempo queriendo irte al extranjero, ahora es tu momento: descubre todos los secretos de Alemania, su rica historia, su cultura y su gente",
-            "imagen": "/assets/alemania.jpg"
+            "imagen": "assets/alemania.jpg"
         }
     
     ]
