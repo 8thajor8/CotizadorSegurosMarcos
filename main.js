@@ -26,11 +26,11 @@ const agregarCamposPasajeros = () => {
                 passengerInput.innerHTML = `
 
                 <div>
-                    <input type="text" id="nombre${i}" name="nombre${i}" placeholder="Nombre Pasajero #${i}" class="form__field wider">
+                    <input type="text" id="nombre${i}" name="nombre${i}" placeholder="Nombre Pasajero #${i}  *" required pattern="[A-Za-z]+" class="form__field wider">
                 </div>
 
                 <div>
-                    <input type="text" id="edad${i}" name="edad${i}" placeholder="Edad Pasajero #${i}" class="form__field wider">
+                    <input type="text" id="edad${i}" name="edad${i}" placeholder="Edad Pasajero #${i}  *" required class="form__field wider">
                 </div>
 
                 <div>
@@ -78,8 +78,7 @@ const agregarCamposPasajeros = () => {
         }
     });
 
-const quote = ()=>{
-    
+const quote = () => {
     
     /*Se vacia la seccion donde va a ir el resultado de la tabla en caso que se cotize mas de una vez*/
     let tablaSeccion= document.getElementById('tablaresultado');
@@ -96,29 +95,51 @@ const quote = ()=>{
     const zoneGroupName = selectedOption.text;
     const zoneGroup = parseInt(zoneGroupSelection.value);
     if(zoneGroup>4 || zoneGroup<1 || isNaN(zoneGroup)){
-        alert("Selecciona una opcion del menu de regiones para poder continuar");
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Selecciona una opcion del menu de regiones para poder continuar',
+            heightAuto: false 
+        });
+        
     }else{
 
         /*Si ingresa una zona valida, consulta las fechas de viaje y realiza la cuenta para determinar cantidad de dias. se guardan valores en local storage*/
+        const fechaHoy = new Date().toISOString().slice(0, 10);
         
+        /*se captura la fecha al momento para verificar que la fecha de inicio sea posterior al dia de la fecha*/
+
         const startdate = new Date(document.getElementById('startdate').value);
+        startdateValid =startdate.toISOString().slice(0, 10);
         localStorage.setItem('startDateValue', startdate.toISOString());
-
+        
         const enddate = new Date(document.getElementById('enddate').value);
+        enddateValid= enddate.toISOString().slice(0, 10);
         localStorage.setItem('endDateValue', enddate.toISOString());
-
+        
         const difference = enddate.getTime() - startdate.getTime();
         const cantDias = Math.ceil(difference / (1000 * 3600 * 24));;
-        console.log(cantDias);
-        if(isNaN(cantDias)){
-            alert("Por favor ingresa las fechas desde y hasta correctamente");
+        if(isNaN(cantDias) || fechaHoy>startdateValid|| enddateValid<startdateValid || cantDias == 0){
+            
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Por favor ingresa las fechas desde y hasta correctamente. La fecha de inicio debe ser mayor al dia de hoy y el fin del viaje no puede ser antes de la fecha de inicio.',
+                heightAuto: false
+            });
         }else{
 
             /*Se sigue con la captura de la cantidad de pasajeros para determinar la cantidad de iteraciones de calculo y se guarda el valor en local storage */
             const cantPasaj = parseInt(document.getElementById('cantpasaj').value);
             localStorage.setItem('cantPasajSelectValue', cantpasaj.value);
             if(isNaN(cantPasaj)){
-                alert("Por favor ingresa la cantidad de pasajeros correspondiente a tu grupo");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Por favor ingresa la cantidad de pasajeros correspondiente a tu grupo',
+                    heightAuto: false 
+                });
+                
                 
             }else{
 
@@ -137,107 +158,128 @@ const quote = ()=>{
                     
                     let edad = parseInt(document.getElementById(`edad${contador}`).value);
                     if(isNaN(edad) || edad>120 || edad<0 ){
-                        alert("Por favor ingrese las edades correctamente");
+                        
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Por favor ingrese las edades correctamente usando numeros unicamente',
+                            heightAuto: false 
+                        });
                         break;
                     }else{
                         
                         /* Se agregan variables de nombre y documento del pasajero y se capturan los datos de los inputs*/
                         let nombrePasajero = document.getElementById(`nombre${contador}`).value;
-                        let documentoPasajero = document.getElementById(`documento${contador}`).value;
-                        
-                        /*calcula segun la zona y el grupo de edad el valor por dia, lo multiplica por la cantidad de dias y lo guarda en una variable*/
-                        
-                        switch (zoneGroup){
-                            case 1:
-                                if (edad < 18){
-                                    precioPorDia = 2;
-                                    precioPasajero = calculoPasajero(precioPorDia);
-                                    
-                                } else if (edad>=18 && edad < 30){
-                                    precioPorDia = 2.5;
-                                    precioPasajero = calculoPasajero(precioPorDia);
-
-                                } else if (edad>=30 && edad < 50){
-                                    precioPorDia = 2.7;
-                                    precioPasajero = calculoPasajero(precioPorDia);
-                                    
-                                } else {
-                                    precioPorDia = 3;
-                                    precioPasajero = calculoPasajero(precioPorDia);
-
-                                }
-                                break;
+                        let nombrePasajeroValid = document.getElementById(`nombre${contador}`);
+                                            
+                        if (nombrePasajeroValid.checkValidity() == false ) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'Por favor ingrese los nombres de los pasajeros correctamente',
+                                heightAuto: false 
+                            });
+                            break;
                             
-                            case 2:
-                                if (edad < 18){
-                                    precioPorDia = 2.5;
-                                    precioPasajero = calculoPasajero(precioPorDia);
+                        } else {
+                            
+                            let documentoPasajero = document.getElementById(`documento${contador}`).value;
+                            
+                            /*calcula segun la zona y el grupo de edad el valor por dia, lo multiplica por la cantidad de dias y lo guarda en una variable*/
+                            
+                            switch (zoneGroup){
+                                case 1:
+                                    if (edad < 18){
+                                        precioPorDia = 2;
+                                        precioPasajero = calculoPasajero(precioPorDia);
+                                        
+                                    } else if (edad>=18 && edad < 30){
+                                        precioPorDia = 2.5;
+                                        precioPasajero = calculoPasajero(precioPorDia);
 
-                                } else if (edad>=18 && edad < 30){
-                                    precioPorDia = 2.7;
-                                    precioPasajero = calculoPasajero(precioPorDia);
+                                    } else if (edad>=30 && edad < 50){
+                                        precioPorDia = 2.7;
+                                        precioPasajero = calculoPasajero(precioPorDia);
+                                        
+                                    } else {
+                                        precioPorDia = 3;
+                                        precioPasajero = calculoPasajero(precioPorDia);
 
-                                } else if (edad>=30 && edad < 50){
-                                    precioPorDia = 3;
-                                    precioPasajero = calculoPasajero(precioPorDia);
+                                    }
+                                    break;
+                                
+                                case 2:
+                                    if (edad < 18){
+                                        precioPorDia = 2.5;
+                                        precioPasajero = calculoPasajero(precioPorDia);
 
-                                } else {
-                                    precioPorDia = 3.5;
-                                    precioPasajero = calculoPasajero(precioPorDia);
+                                    } else if (edad>=18 && edad < 30){
+                                        precioPorDia = 2.7;
+                                        precioPasajero = calculoPasajero(precioPorDia);
 
-                                }
-                                break;
+                                    } else if (edad>=30 && edad < 50){
+                                        precioPorDia = 3;
+                                        precioPasajero = calculoPasajero(precioPorDia);
 
-                            case 3:
-                                if (edad < 18){
-                                    precioPorDia = 2.7;
-                                    precioPasajero = calculoPasajero(precioPorDia);
+                                    } else {
+                                        precioPorDia = 3.5;
+                                        precioPasajero = calculoPasajero(precioPorDia);
 
-                                } else if (edad>=18 && edad < 30){
-                                    precioPorDia = 3;
-                                    precioPasajero = calculoPasajero(precioPorDia);
+                                    }
+                                    break;
 
-                                } else if (edad>=30 && edad < 50){
-                                    precioPorDia = 3.5;
-                                    precioPasajero = calculoPasajero(precioPorDia);
+                                case 3:
+                                    if (edad < 18){
+                                        precioPorDia = 2.7;
+                                        precioPasajero = calculoPasajero(precioPorDia);
 
-                                } else {
-                                    precioPorDia = 3.7;
-                                    precioPasajero = calculoPasajero(precioPorDia);
+                                    } else if (edad>=18 && edad < 30){
+                                        precioPorDia = 3;
+                                        precioPasajero = calculoPasajero(precioPorDia);
 
-                                }
-                                break;
+                                    } else if (edad>=30 && edad < 50){
+                                        precioPorDia = 3.5;
+                                        precioPasajero = calculoPasajero(precioPorDia);
 
-                            case 4:
-                                if (edad < 18){
-                                    precioPorDia = 3;
-                                    precioPasajero = calculoPasajero(precioPorDia);
+                                    } else {
+                                        precioPorDia = 3.7;
+                                        precioPasajero = calculoPasajero(precioPorDia);
 
-                                } else if (edad>=18 && edad < 30){
-                                    precioPorDia = 3.5;
-                                    precioPasajero = calculoPasajero(precioPorDia);
+                                    }
+                                    break;
 
-                                } else if (edad>=30 && edad < 50){
-                                    precioPorDia = 3.7;
-                                    precioPasajero = calculoPasajero(precioPorDia);
+                                case 4:
+                                    if (edad < 18){
+                                        precioPorDia = 3;
+                                        precioPasajero = calculoPasajero(precioPorDia);
 
-                                } else {
-                                    precioPorDia = 4;
-                                    precioPasajero = calculoPasajero(precioPorDia);
+                                    } else if (edad>=18 && edad < 30){
+                                        precioPorDia = 3.5;
+                                        precioPasajero = calculoPasajero(precioPorDia);
 
-                                }
-                                break;
+                                    } else if (edad>=30 && edad < 50){
+                                        precioPorDia = 3.7;
+                                        precioPasajero = calculoPasajero(precioPorDia);
+
+                                    } else {
+                                        precioPorDia = 4;
+                                        precioPasajero = calculoPasajero(precioPorDia);
+
+                                    }
+                                    break;
+                            }
+
+                            /*Se suma el precio del pasajero al precio final, se genera un nuevo objeto con los datos del pasajero y se agrega al array total de pasajeros*/
+                            precioFinal += precioPasajero;
+                            
+                            const pasajerocompletado = new Pasajero (contador, nombrePasajero, documentoPasajero, edad, precioPorDia, precioPasajero)
+                            arrayPasajeros.push(pasajerocompletado);
+                            
+                            contador++;
+
+                        
                         }
 
-                        /*Se suma el precio del pasajero al precio final, se genera un nuevo objeto con los datos del pasajero y se agrega al array total de pasajeros*/
-                        precioFinal += precioPasajero;
-                        
-                        const pasajerocompletado = new Pasajero (contador, nombrePasajero, documentoPasajero, edad, precioPorDia, precioPasajero)
-                        arrayPasajeros.push(pasajerocompletado);
-                        
-                        contador++;
-
-                        
                     }
                 }
                 /*Se arma una tabla con todos los datos finales*/
@@ -312,4 +354,62 @@ const borrar = ()=>{
 
     
 }
+
+/*Se ejecuta la consulta a una opi local, que dispara SWAL cada 15 segundos iterando cada elemento del array de objetos de la api. Al mismo tiempo, tambien cuenta con un link y el metodo didRender para poder detener la iteracion*/
+const datosAPI = () => {
+    const APIPAISES = 'paises.json';
+    fetch (APIPAISES)
+        .then((resultado) => resultado.json())
+        .then((data) => {
+        
+        const ofertas = data.ofertasPaises;
+        console.log(ofertas.length);
+        
+        let index = 0;
+        const interval = setInterval(() => {
+            if (index < ofertas.length) {
+                const oferta = ofertas[index];
+                
+                const swalOfertas = Swal.fire({
+                    position: 'top-end',
+                    title: `${oferta.pais}`,
+                    text: `${oferta.texto}`,
+                    imageUrl: `${oferta.imagen}`,
+                    imageWidth: 300,
+                    imageHeight: 200,
+                    imageAlt: `${oferta.pais}`,
+                    showConfirmButton: false,
+                    timer: 4000,
+                    heightAuto: false,
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    },
+                    footer: '<a href="#">Dejar de recibir ofertas</a>',
+                    didRender: () => {
+                        const footerLink = document.querySelector('.swal2-footer a');
+                        footerLink.addEventListener('click', () => {
+                            clearInterval(interval);
+                            Swal.close();
+                        });
+                    }
+
+                });
+
+                
+                
+                index++;
+
+            } else {
+                clearInterval(interval);
+                }
+            }, 15000);
+        });
+    };
+
+datosAPI();
+
+
 
